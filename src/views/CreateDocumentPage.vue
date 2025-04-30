@@ -24,6 +24,16 @@
               </div>
 
               <div class="mb-4">
+                <label class="block mb-1 font-medium">Rename File (optional)</label>
+                <input
+                  type="text"
+                  v-model="customName"
+                  class="w-full border px-2 py-1 rounded"
+                  placeholder="e.g. Working With Children Check.pdf"
+                />
+              </div>
+
+              <div class="mb-4">
                 <label class="block mb-1 font-medium">Expires At (optional)</label>
                 <!-- TODO: Use a proper date picker -->
                 <input
@@ -57,6 +67,7 @@ import { documentsClient } from '../client.ts'
 
 const file = ref<File | null>(null)
 const expiresAt = ref('')
+const customName = ref('')
 const loading = ref(false)
 const message = ref('')
 const error = ref('')
@@ -75,6 +86,12 @@ const handleUploadDocument = async () => {
 
   const formData = new FormData()
   formData.append('document', file.value)
+
+  const useCustomFileName = customName.value.trim()
+  if (useCustomFileName !== '') {
+    formData.append('custom_file_name', useCustomFileName)
+  }
+
   if (expiresAt.value) {
     formData.append('expires_at', expiresAt.value)
   }
