@@ -15,12 +15,17 @@ import { Document, documentsClient } from '../../client.ts'
 
 const props = defineProps<{
   document: Document;
+  disabled?: boolean;
 }>()
 const emit = defineEmits<{
   archived: [Document];
 }>()
 
 const handleButtonClicked = async () => {
+  if (props.disabled) {
+    return
+  }
+
   isLoading.value = true
 
   try {
