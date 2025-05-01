@@ -34,7 +34,12 @@
                       <td class="px-6 py-4">{{ document.id }}</td>
                       <td class="px-6 py-4">{{ document.name }}</td>
                       <td class="px-6 py-4">{{ document.expires_at }}</td>
-                      <td class="px-6 py-4"></td>
+                      <td class="px-6 py-4">
+                        <DocumentArchiveButton
+                          :document="document"
+                          @archived="handleDocumentArchived"
+                        />
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -50,6 +55,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { documentsClient, Document } from '../client.ts'
+import DocumentArchiveButton from '../components/Document/DocumentArchiveButton.vue'
+
+const handleDocumentArchived = (document: Document) => {
+  const documentIndex = userDocuments.value.findIndex(({ id }) => id === document.id)
+
+  if (documentIndex >= 0) {
+    userDocuments.value.splice(documentIndex, 1)
+  }
+}
 
 const userDocuments = ref<Document[]>([])
 
