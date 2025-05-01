@@ -18,11 +18,18 @@
         </RouterLink>
       </div>
 
-      <ul class="list-disc ml-6">
+      <ul class="list-disc ml-6 mb-8">
         <li>ID: {{ userDocument.id }}</li>
         <li>Name: {{ userDocument.name }}</li>
         <li>Expiry: {{ formatExpiryDate(userDocument.expires_at) }}</li>
       </ul>
+
+      <div>
+        <DocumentArchiveButton
+          :document="userDocument"
+          @archived="handleDocumentArchived"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -31,12 +38,19 @@
 import { onMounted, ref } from 'vue'
 import { documentsClient, Document } from '../client.ts'
 import { useDocument } from '../composables/useDocument.ts'
+import DocumentArchiveButton from '../components/Document/DocumentArchiveButton.vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   documentId: string;
 }>();
 
+const router = useRouter()
 const { formatExpiryDate } = useDocument()
+
+const handleDocumentArchived = () => {
+  router.replace('/home')
+}
 
 const isLoading = ref(false)
 const userDocument = ref<Document | null>(null)
