@@ -25,6 +25,7 @@ export const router = createRouter({
         {
           path: "documents/:documentId",
           component: () => import("./views/ViewDocumentPage.vue"),
+          name: 'documents-id',
           props: true,
         },
       ],

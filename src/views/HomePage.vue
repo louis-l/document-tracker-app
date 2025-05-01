@@ -45,8 +45,17 @@
                     >
                       <td class="px-6 py-4">{{ document.id }}</td>
                       <td class="px-6 py-4">{{ document.name }}</td>
-                      <td class="px-6 py-4">{{ document.expires_at ? formatDatetime(document.expires_at) : 'Never' }}</td>
+                      <td class="px-6 py-4">{{ formatExpiryDate(document.expires_at) }}</td>
                       <td class="px-6 py-4">
+                        <RouterLink :to="{ name: 'documents-id', params: { documentId: document.id } }">
+                          <button
+                            type="button"
+                            class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                          >
+                            View
+                          </button>
+                        </RouterLink>
+
                         <DocumentArchiveButton
                           :document="document"
                           :disabled="isLoading"
@@ -95,11 +104,14 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { documentsClient, Document, DocumentPagination, DocumentFilterValue } from '../client.ts'
 import DocumentArchiveButton from '../components/Document/DocumentArchiveButton.vue'
+import { useDocument } from '../composables/useDocument.ts'
 
 type DocumentFilterOption = {
   label: string;
   value: DocumentFilterValue;
 }
+
+const { formatExpiryDate } = useDocument()
 
 const handleDocumentArchived = (document: Document) => {
   const documentIndex = userDocuments.value.findIndex(({ id }) => id === document.id)
@@ -138,18 +150,6 @@ const handleGoToNextPage = async () => {
   }
 
   await fetchUserDocuments(documentPagination.value.current_page + 1)
-}
-
-const formatDatetime = (input: string) => {
-  const date = new Date(input)
-  return new Intl.DateTimeFormat('en-AU', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  }).format(date)
 }
 
 const isLoading = ref(false)
